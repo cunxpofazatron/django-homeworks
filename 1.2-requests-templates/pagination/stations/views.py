@@ -1,17 +1,32 @@
-from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.shortcuts import render
+import csv
+from django.conf import settings
 
 
-def index(request):
-    return redirect(reverse('bus_stations'))
+def stations_view(request):
+    with open(settings.BUS_STATION_CSV, encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        stations = list(reader)
 
+    page = int(request.GET.get('page', 1))
+    per_page = 10
 
-def bus_stations(request):
-    # получите текущую страницу и передайте ее в контекст
-    # также передайте в контекст список станций на странице
+    total = len(stations)
+    total_pages = (total // per_page) + (1 if total % per_page else 0)
+
+    # защита
+    if page < 1:
+        page = 1
+    if page > total_pages:
+        page = total_pages
+
+    start = (page - 1) * per_page
+    end = start + per_page
 
     context = {
-    #     'bus_stations': ...,
-    #     'page': ...,
+        'bus_stations': stations[start:end],
+        'page': page,
+        'total_pages': total_pages
     }
+
     return render(request, 'stations/index.html', context)

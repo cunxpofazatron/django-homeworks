@@ -1,14 +1,11 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Рецепты</title>
-</head>
-<body>
-{% for ingredient, amount in recipe.items %}
-    <p>{{ ingredient }}: {{ amount }}</p>
-{% empty %}
-    <p>Такого рецепта не знаю :(</p>
-{% endfor %}
-</body>
-</html>
+<h1>Рецепт</h1>
+
+{% if recipe %}
+    <ul>
+        {% for item in recipe %}
+            <li>{{ item }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Нет рецепта</p>
+{% endif %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ phone.name }}{% endblock %}
+
+{% block content %}
+  <h1>{{ phone.name }}</h1>
+  <p>{{ phone.price }}</p>
+
+  <img class="product-img" src="{% static phone.image %}" alt="{{ phone.name }}">
+{% endblock %}

@@ -1,43 +1,43 @@
 from rest_framework import serializers
+from .models import Product, Stock, StockProduct
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    # настройте сериализатор для продукта
-    pass
+    class Meta:
+        model = Product
+        fields = '__all__'
 
 
-class ProductPositionSerializer(serializers.ModelSerializer):
-    # настройте сериализатор для позиции продукта на складе
-    pass
-
+class StockProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StockProduct
+        fields = ['product', 'price', 'quantity']
 
 class StockSerializer(serializers.ModelSerializer):
-    positions = ProductPositionSerializer(many=True)
+    products = StockProductSerializer(source='positions', many=True)
 
-    # настройте сериализатор для склада
+    class Meta:
+        model = Stock
+        fields = ['id', 'address', 'products']
 
     def create(self, validated_data):
-        # достаем связанные данные для других таблиц
-        positions = validated_data.pop('positions')
+        products_data = validated_data.pop('positions')
+        stock = Stock.objects.create(**validated_data)
 
-        # создаем склад по его параметрам
-        stock = super().create(validated_data)
-
-        # здесь вам надо заполнить связанные таблицы
-        # в нашем случае: таблицу StockProduct
-        # с помощью списка positions
+        for product in products_data:
+            StockProduct.objects.create(stock=stock, **product)
 
         return stock
 
     def update(self, instance, validated_data):
-        # достаем связанные данные для других таблиц
-        positions = validated_data.pop('positions')
+        products_data = validated_data.pop('positions')
 
-        # обновляем склад по его параметрам
-        stock = super().update(instance, validated_data)
+        instance.address = validated_data.get('address', instance.address)
+        instance.save()
 
-        # здесь вам надо обновить связанные таблицы
-        # в нашем случае: таблицу StockProduct
-        # с помощью списка positions
+        instance.positions.all().delete()
 
-        return stock
+        for product in products_data:
+            StockProduct.objects.create(stock=instance, **product)
+
+        return instance

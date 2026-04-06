@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 
 from advertisements.models import Advertisement
-
+from rest_framework.exceptions import ValidationError
 
 class UserSerializer(serializers.ModelSerializer):
     """Serializer для пользователя."""
@@ -38,8 +38,11 @@ class AdvertisementSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
     def validate(self, data):
-        """Метод для валидации. Вызывается при создании и обновлении."""
-
-        # TODO: добавьте требуемую валидацию
-
+        # если это обновление
+        if self.instance:
+            # если объявление уже закрыто
+            if self.instance.status == "CLOSED":
+                raise serializers.ValidationError(
+                "Нельзя редактировать закрытое объявление"
+            )
         return data

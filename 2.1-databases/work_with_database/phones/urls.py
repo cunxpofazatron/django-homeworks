@@ -1,7 +1,7 @@
-from .views import catalog, phone
 from django.urls import path
+from . import views
 
 urlpatterns = [
-    path('', catalog, name='catalog'),
-    path('<slug:slug>/', phone, name='phone'),
+    path('', views.catalog, name='catalog'),
+    path('<slug:slug>/', views.phone, name='phone'),
 ]

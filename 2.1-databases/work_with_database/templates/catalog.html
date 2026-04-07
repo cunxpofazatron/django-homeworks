@@ -1,7 +1,5 @@
 {% extends "base.html" %}
 
-{% load static %}
-
 {% block title %}Каталог{% endblock %}
 
 {% block content %}
@@ -23,8 +21,10 @@
           <a href="{% url 'phone' phone.slug %}">
             <h3>{{ phone.name }}</h3>
           </a>
+
           <div class="price">Стоимость: {{ phone.price }} ₽</div>
-          <img class="phone-image" src="{% static phone.image %}" alt="{{ phone.name }}">
+
+          <img class="phone-image" src="{{ phone.image }}" alt="{{ phone.name }}">
         </div>
       {% endfor %}
     </div>

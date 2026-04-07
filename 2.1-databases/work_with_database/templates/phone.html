@@ -1,11 +1,15 @@
 {% extends "base.html" %}
-{% load static %}
 
 {% block title %}{{ phone.name }}{% endblock %}
 
 {% block content %}
-  <h1>{{ phone.name }}</h1>
-  <p>{{ phone.price }}</p>
+  <div class="container">
+    <h1>{{ phone.name }}</h1>
 
-  <img class="product-img" src="{% static phone.image %}" alt="{{ phone.name }}">
+    <p><strong>Цена:</strong> {{ phone.price }} ₽</p>
+    <p><strong>Дата выхода:</strong> {{ phone.release_date }}</p>
+    <p><strong>LTE:</strong> {{ phone.lte_exists|yesno:"Да,Нет" }}</p>
+
+    <img class="product-img" src="{{ phone.image }}" alt="{{ phone.name }}">
+  </div>
 {% endblock %}

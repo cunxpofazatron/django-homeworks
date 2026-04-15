@@ -21,3 +21,4 @@ def get_students_by_teacher(teacher_name):
 if __name__ == "__main__":
     name = input("Введите имя учителя: ")
     get_students_by_teacher(name)
+
